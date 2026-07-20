@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Absensi RFID</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <style>
+    body { text-align: center; margin-top: 50px; }
+    #card-anim {
+      font-size: 100px;
+      display: none;
+      animation: boom 0.6s ease-in-out;
+    }
+    @keyframes boom {
+      0% { transform: scale(0.5); opacity: 0; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    #rfidInput {
+      opacity: 0; 
+      position: absolute;
+      left: -9999px;
+    }
+  </style>
+</head>
+<body class="container">
+  <h2>🚪 Scan Kartu RFID</h2>
+  <a href="dashboard.php" class="btn btn-secondary mb-3">← Kembali</a>
+
+  <div id="result" class="alert alert-info">Tempelkan kartu RFID ke reader...</div>
+  <div id="card-anim">💳💥</div>
+  <h5 class="mt-4">🔑 Testing (Blm Ada Alat)</h5>
+  <form id="manualForm" class="d-flex justify-content-center mt-2">
+    <input type="text" id="manualUID" class="form-control w-50" placeholder="Masukkan UID / ID" required>
+    <button type="submit" class="btn btn-primary ms-2">Absen</button>
+  </form>
+
+  <!-- Input tersembunyi untuk tangkap UID -->
+  <input type="text" id="rfidInput" autofocus>
+
+  <!-- Suara beep -->
+  <audio id="beepSound" src="beep.mp3" preload="auto"></audio>
+
+  <script>
+    const rfidInput = document.getElementById("rfidInput");
+    rfidInput.focus();
+
+    rfidInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        let uid = rfidInput.value.trim();
+        if (uid !== "") {
+          fetch("scan_rfid.php?rfid_uid=" + uid)
+            .then(res => res.text())
+            .then(data => {
+              document.getElementById("result").innerHTML = data;
+              document.getElementById("beepSound").play();
+
+              // Animasi kartu
+              let card = document.getElementById("card-anim");
+              card.style.display = "block";
+              card.style.animation = "none"; // reset animasi
+              void card.offsetWidth; // trigger reflow
+              card.style.animation = "boom 0.6s ease-in-out";
+            });
+        }
+        rfidInput.value = ""; // kosongkan setelah scan
+      }
+    });
+
+    // Kalau kehilangan fokus, otomatis kembalikan
+    window.addEventListener("focus", () => rfidInput.focus());
+    document.addEventListener("click", () => rfidInput.focus());
+
+    // Form input manual
+    const manualForm = document.getElementById("manualForm");
+    manualForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      let uid = document.getElementById("manualUID").value.trim();
+      if (uid !== "") {
+        fetch("scan_rfid.php?rfid_uid=" + uid)
+          .then(res => res.text())
+          .then(data => {
+            document.getElementById("result").innerHTML = data;
+            document.getElementById("beepSound").play();
+
+            // Animasi kartu
+            let card = document.getElementById("card-anim");
+            card.style.display = "block";
+            card.style.animation = "none"; 
+            void card.offsetWidth; 
+            card.style.animation = "boom 0.6s ease-in-out";
+          });
+        document.getElementById("manualUID").value = "";
+      }
+    });
+
+  </script>
+</body>
+</html>
