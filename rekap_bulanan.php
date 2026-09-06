@@ -107,7 +107,7 @@ $tanggal_terakhir = date("j F Y", strtotime("$tahun-$bulan-" . cal_days_in_month
     <a href="cetak_absen.php?kelas=<?= $kelas ?>&bulan=<?= $bulan ?>&tahun=<?= $tahun ?>" target="_blank" style="padding:5px 10px; background:#28a745; color:#fff; text-decoration:none; border-radius:4px;">Cetak / Simpan PDF</a>
 	  <a href="dashboard.php" 
    style="padding:5px 10px; background:#6c757d; color:#fff; text-decoration:none; border-radius:4px;">
-   ⬅ Kembali ke Dashboard
+   ⬅️ Kembali ke Dashboard
 </a>
   </form>
 
@@ -189,13 +189,13 @@ $tanggal_terakhir = date("j F Y", strtotime("$tahun-$bulan-" . cal_days_in_month
         Mengetahui,<br>
         Kepala Sekolah<br><br><br><br>
         <u><?= $profil['kepala_sekolah'] ?? '....................................' ?></u><br>
-        NIP. <?= $profil['nip_kepala'] ?? '........................' ?>
+        NBM. <?= $profil['nip_kepala'] ?? '........................' ?>
       </td>
       <td style="width:50%;">
         <?= $tanggal_terakhir ?><br>
         Wali Kelas <?= $kelas != '' ? $kelas : '(Semua Kelas)' ?><br><br><br><br>
         <u><?= $wali_nama ?></u><br>
-        NIP. <?= $wali_nip ?>
+        NBM. <?= $wali_nip ?>
       </td>
     </tr>
   </table>

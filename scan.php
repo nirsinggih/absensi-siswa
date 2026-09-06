@@ -4,50 +4,60 @@ if (!isset($_SESSION['username']) || !in_array($_SESSION['role'], ['admin', 'gur
     header("Location: index.php");
     exit;
 }
-
 include "config.php";
 date_default_timezone_set("Asia/Jakarta");
-
 if (isset($_GET['nisn'])) {
   $nisn = $_GET['nisn'];
   $tanggal = date("Y-m-d");
   $jam = date("H:i:s");
+
+  // Batas waktu absen masuk & pulang
+  $batasMasukMulai  = "06:00:00";
+  $batasMasukAkhir  = "07:30:00";
+  $batasPulangMulai = "15:30:00";
+  $batasPulangAkhir = "16:30:00";
 
   $cekLibur = mysqli_query($conn, "SELECT * FROM hari_libur WHERE tanggal='$tanggal'");
   if (mysqli_num_rows($cekLibur) > 0) {
     echo "⛔ Hari ini libur!";
     exit;
   }
-
   $siswa = mysqli_query($conn, "SELECT * FROM siswa WHERE nisn='$nisn'");
   if (mysqli_num_rows($siswa) == 0) {
     echo "❌ Siswa tidak ditemukan.";
     exit;
   }
   $s = mysqli_fetch_assoc($siswa);
-
   $cekAbsen = mysqli_query($conn, "SELECT * FROM absensi WHERE siswa_id={$s['id']} AND tanggal='$tanggal'");
-  
+
   if (mysqli_num_rows($cekAbsen) == 0) {
-    // Belum ada absen → catat jam masuk
-    mysqli_query($conn, "INSERT INTO absensi (siswa_id, tanggal, jam, status) 
-                         VALUES ({$s['id']}, '$tanggal', '$jam', 'H')");
-    echo "✅ Absen berhasil: {$s['nama']} ({$s['kelas']})<br>🕒 Jam hadir: $jam";
+    // Belum ada absen → cek apakah dalam jam absen masuk
+    if ($jam >= $batasMasukMulai && $jam <= $batasMasukAkhir) {
+      mysqli_query($conn, "INSERT INTO absensi (siswa_id, tanggal, jam, status) 
+                           VALUES ({$s['id']}, '$tanggal', '$jam', 'H')");
+      echo "✅ Absen berhasil: {$s['nama']} ({$s['kelas']})<br>🕒 Jam hadir: $jam";
+    } else {
+      echo "⛔ Absen masuk hanya bisa dilakukan pukul {$batasMasukMulai} - {$batasMasukAkhir}.<br>Sekarang jam $jam.";
+    }
   } else {
     // Sudah ada absen, cek apakah jam pulang sudah terisi
     $row = mysqli_fetch_assoc($cekAbsen);
 
-    if (is_null($row['jam_pulang']) && $jam >= "09:00:00") {
-      // Update jam pulang
-      mysqli_query($conn, "UPDATE absensi SET jam_pulang='$jam' 
-                           WHERE id={$row['id']}");
-      echo "✅ Pulang berhasil: {$s['nama']} ({$s['kelas']})<br>🕒 Jam pulang: $jam";
+    if (is_null($row['jam_pulang'])) {
+      if ($jam >= $batasPulangMulai && $jam <= $batasPulangAkhir) {
+        // Update jam pulang
+        mysqli_query($conn, "UPDATE absensi SET jam_pulang='$jam' 
+                             WHERE id={$row['id']}");
+        echo "✅ Pulang berhasil: {$s['nama']} ({$s['kelas']})<br>🕒 Jam pulang: $jam";
+      } elseif ($jam < $batasPulangMulai) {
+        echo "⚠️ {$s['nama']} sudah absen masuk jam {$row['jam']}.<br>Absen pulang baru bisa dilakukan pukul {$batasPulangMulai} - {$batasPulangAkhir}.";
+      } else {
+        echo "⛔ Waktu absen pulang sudah berakhir (pukul {$batasPulangAkhir}).<br>{$s['nama']} belum sempat absen pulang.";
+      }
     } else {
       // Sudah absen masuk & pulang
       echo "ℹ️ {$s['nama']} sudah absen hari ini.<br>🕒 Jam hadir: {$row['jam']}";
-      if (!is_null($row['jam_pulang'])) {
-        echo "<br>🕒 Jam pulang: {$row['jam_pulang']}";
-      }
+      echo "<br>🕒 Jam pulang: {$row['jam_pulang']}";
     }
   }
   exit;
@@ -65,13 +75,10 @@ if (isset($_GET['nisn'])) {
 <body class="container mt-4">
   <h2>Scan QR Code Siswa</h2>
   <a href="dashboard.php" class="btn btn-secondary mb-3">← Kembali</a>
-
   <div id="reader" style="width: 100%"></div>
   <div id="result" class="mt-3" style="max-height: 300px; overflow-y: auto;"></div>
-
   <!-- Suara beep -->
   <audio id="beepSound" src="beep.mp3" preload="auto"></audio>
-
   <script>
     function onScanSuccess(qrMessage) {
       fetch("scan.php?nisn=" + qrMessage)
@@ -82,15 +89,12 @@ if (isset($_GET['nisn'])) {
           alertDiv.className = "alert alert-info mb-2";
           alertDiv.innerHTML = data;
           result.appendChild(alertDiv);
-
           // Mainkan suara beep
           document.getElementById("beepSound").play();
-
           // Scroll otomatis ke bawah
           result.scrollTop = result.scrollHeight;
         });
     }
-
     let html5QrcodeScanner = new Html5QrcodeScanner(
       "reader",
       { fps: 10, qrbox: 250 },

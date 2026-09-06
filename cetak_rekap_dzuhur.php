@@ -96,7 +96,7 @@ $profil = mysqli_fetch_assoc(
 ========================== */
 
 $waliNama = "................................";
-$waliNip  = "................................";
+$waliNbm  = "................................";
 
 if($kelas!=""){
 
@@ -112,7 +112,7 @@ if($kelas!=""){
         $w=mysqli_fetch_assoc($qWali);
 
         $waliNama=$w['nama_wali'];
-        $waliNip=$w['nip_wali'];
+        $waliNbm=$w['nbm_wali'];
 
     }
 
@@ -484,8 +484,8 @@ Kepala Sekolah
 
 <br>
 
-NIP.
-<?= htmlspecialchars($profil['nip_kepala'] ?? '-') ?>
+NBM.
+<?= htmlspecialchars($profil['nbm_kepala'] ?? '-') ?>
 
 </td>
 
@@ -510,8 +510,8 @@ Wali Kelas
 
 <br>
 
-NIP.
-<?= htmlspecialchars($waliNip) ?>
+NBM.
+<?= htmlspecialchars($waliNbm) ?>
 
 </td>
 

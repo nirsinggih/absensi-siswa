@@ -31,9 +31,9 @@ if (isset($_POST['import'])) {
 
                 if ($nis != "" && $nisn != "" && $nama != "" && $kelas != "") {
                     // Validasi
-                    if (!preg_match('/^[0-9]{4}$/', $nis)) {
+                    if (!preg_match('/^[0-9]{9}$/', $nis)) {
                         $gagal++;
-                        $errors[] = "Baris $row: NIS harus 4 digit angka.";
+                        $errors[] = "Baris $row: NIS harus 9 digit angka.";
                         continue;
                     }
                     if (!preg_match('/^[0-9]{10}$/', $nisn)) {
@@ -41,9 +41,9 @@ if (isset($_POST['import'])) {
                         $errors[] = "Baris $row: NISN harus 10 digit angka.";
                         continue;
                     }
-                    if (strlen($kelas) > 7) {
+                    if (strlen($kelas) > 8) {
                         $gagal++;
-                        $errors[] = "Baris $row: Kelas maksimal 7 karakter.";
+                        $errors[] = "Baris $row: Kelas maksimal 8 karakter.";
                         continue;
                     }
 

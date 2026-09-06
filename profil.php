@@ -174,7 +174,7 @@ if (isset($_POST['ubah_password'])) {
         <label>Nama Kepala Sekolah</label>
         <input type="text" name="kepala" value="<?= htmlspecialchars($profil['kepala_sekolah']) ?>" required>
 
-        <label>NIP Kepala Sekolah</label>
+        <label>NBM Kepala Sekolah</label>
         <input type="text" name="nip" value="<?= htmlspecialchars($profil['nip_kepala']) ?>" required>
 
         <label>Jam Masuk</label>

@@ -39,16 +39,16 @@ while ($row = mysqli_fetch_assoc($queryLibur)) {
 }
 
 // Profil sekolah
-$profil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT kepala_sekolah, nip_kepala FROM profil_sekolah LIMIT 1"));
+$profil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT kepala_sekolah, nbm_kepala FROM profil_sekolah LIMIT 1"));
 
 // Wali kelas
 $wali_nama = '....................................';
-$wali_nip = '........................';
+$wali_nbm = '........................';
 if ($kelas != '') {
-    $qWali = mysqli_query($conn, "SELECT nama_wali, nip_wali FROM wali_kelas WHERE kelas = '$kelas' LIMIT 1");
+    $qWali = mysqli_query($conn, "SELECT nama_wali, nbm_wali FROM wali_kelas WHERE kelas = '$kelas' LIMIT 1");
     if ($w = mysqli_fetch_assoc($qWali)) {
         $wali_nama = $w['nama_wali'];
-        $wali_nip = $w['nip_wali'];
+        $wali_nbm = $w['nbm_wali'];
     }
 }
 
@@ -140,8 +140,8 @@ $pdf->Cell(100,6,$profil['kepala_sekolah'] ?? '.................................
 $pdf->Cell(100,6,$wali_nama,0,1,'C');
 
 $pdf->SetX($marginKiri);
-$pdf->Cell(100,6,"NIP. ".($profil['nip_kepala'] ?? '........................'),0,0,'C');
-$pdf->Cell(100,6,"NIP. ".$wali_nip,0,1,'C');
+$pdf->Cell(100,6,"NBM. ".($profil['nbm_kepala'] ?? '........................'),0,0,'C');
+$pdf->Cell(100,6,"NBM. ".$wali_nbm,0,1,'C');
 
 
 $pdf->Output();
