@@ -18,7 +18,7 @@ if (isset($_POST['simpan'])) {
     $nama       = $_POST['nama'];
     $alamat     = $_POST['alamat'];
     $kepala     = $_POST['kepala'];
-    $nip        = $_POST['nip'];
+    $nbm        = $_POST['nbm'];
     $jam_masuk  = $_POST['jam_masuk'];
     $jam_pulang = $_POST['jam_pulang'];
 
@@ -105,7 +105,7 @@ if (!empty($_FILES['background']['name'])) {
         nama_sekolah     = '$nama',
         alamat           = '$alamat',
         kepala_sekolah   = '$kepala',
-        nip_kepala       = '$nip',
+        nbm_kepala       = '$nbm',
         logo             = '$logo',
         background_kartu = '$background',
         jam_masuk        = " . ($jam_masuk ? "'$jam_masuk'" : "NULL") . ",
@@ -174,8 +174,8 @@ if (isset($_POST['ubah_password'])) {
         <label>Nama Kepala Sekolah</label>
         <input type="text" name="kepala" value="<?= htmlspecialchars($profil['kepala_sekolah']) ?>" required>
 
-        <label>NIP Kepala Sekolah</label>
-        <input type="text" name="nip" value="<?= htmlspecialchars($profil['nip_kepala']) ?>" required>
+        <label>NBM Kepala Sekolah</label>
+        <input type="text" name="nbm" value="<?= htmlspecialchars($profil['nbm_kepala']) ?>" required>
 
         <label>Jam Masuk</label>
         <input type="time" name="jam_masuk" value="<?= htmlspecialchars($profil['jam_masuk']) ?>" step="60">

@@ -112,7 +112,7 @@ if($kelas!=""){
         $w=mysqli_fetch_assoc($qWali);
 
         $waliNama=$w['nama_wali'];
-        $waliNip=$w['nip_wali'];
+        $waliNip=$w['nbm_wali'];
 
     }
 
@@ -484,7 +484,7 @@ Kepala Sekolah
 
 <br>
 
-NIP.
+NBM.
 <?= htmlspecialchars($profil['nip_kepala'] ?? '-') ?>
 
 </td>
@@ -510,7 +510,7 @@ Wali Kelas
 
 <br>
 
-NIP.
+NBM.
 <?= htmlspecialchars($waliNip) ?>
 
 </td>

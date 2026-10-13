@@ -42,12 +42,12 @@ if ($semester !== '') {
 // Profil & wali kelas
 $profil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT kepala_sekolah, nip_kepala FROM profil_sekolah LIMIT 1"));
 $wali_nama = '....................................';
-$wali_nip  = '........................';
+$wali_nbm  = '........................';
 if ($kelas !== '') {
-  $qWali = mysqli_query($conn, "SELECT nama_wali, nip_wali FROM wali_kelas WHERE kelas = '$kelas' LIMIT 1");
+  $qWali = mysqli_query($conn, "SELECT nama_wali, nbm_wali FROM wali_kelas WHERE kelas = '$kelas' LIMIT 1");
   if ($w = mysqli_fetch_assoc($qWali)) {
     $wali_nama = $w['nama_wali'] ?: $wali_nama;
-    $wali_nip  = $w['nip_wali']  ?: $wali_nip;
+    $wali_nbm  = $w['nbm_wali']  ?: $wali_nbm;
   }
 }
 ?>
@@ -248,7 +248,7 @@ if ($kelas !== '') {
           <?= date("j F Y") ?><br>
           Wali Kelas <?= $kelas !== '' ? htmlspecialchars($kelas) : '(Semua Kelas)' ?><br><br><br><br>
           <u><?= htmlspecialchars($wali_nama) ?></u><br>
-          NIP. <?= htmlspecialchars($wali_nip) ?>
+          NIP. <?= htmlspecialchars($wali_nbm) ?>
         </div>
       </div>
     </div>

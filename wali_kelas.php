@@ -10,9 +10,9 @@ include 'config.php';
 if (isset($_POST['tambah'])) {
     $kelas = mysqli_real_escape_string($conn, $_POST['kelas']);
     $nama_wali = mysqli_real_escape_string($conn, $_POST['nama_wali']);
-    $nip_wali = mysqli_real_escape_string($conn, $_POST['nip_wali']);
-    mysqli_query($conn, "INSERT INTO wali_kelas (kelas, nama_wali, nip_wali) 
-                         VALUES ('$kelas', '$nama_wali', '$nip_wali')");
+    $nbm_wali = mysqli_real_escape_string($conn, $_POST['nbm_wali']);
+    mysqli_query($conn, "INSERT INTO wali_kelas (kelas, nama_wali, nbm_wali) 
+                         VALUES ('$kelas', '$nama_wali', '$nbm_wali')");
     header("Location: wali_kelas.php");
     exit;
 }
@@ -22,19 +22,19 @@ if (isset($_POST['edit'])) {
     $id = intval($_POST['id']);
     $kelas = mysqli_real_escape_string($conn, $_POST['kelas']);
     $nama_wali = mysqli_real_escape_string($conn, $_POST['nama_wali']);
-    $nip_wali = mysqli_real_escape_string($conn, $_POST['nip_wali']);
-    mysqli_query($conn, "UPDATE wali_kelas SET kelas='$kelas', nama_wali='$nama_wali', nip_wali='$nip_wali' WHERE id=$id");
+    $nip_wali = mysqli_real_escape_string($conn, $_POST['nbm_wali']);
+    mysqli_query($conn, "UPDATE wali_kelas SET kelas='$kelas', nama_wali='$nama_wali', nbm_wali='$nbm_wali' WHERE id=$id");
     header("Location: wali_kelas.php");
     exit;
 }
 
 // Generate akun massal guru (wali kelas)
 if (isset($_POST['generate_akun'])) {
-    $q_wali = mysqli_query($conn, "SELECT id, nama_wali, nip_wali FROM wali_kelas");
+    $q_wali = mysqli_query($conn, "SELECT id, nama_wali, nbm_wali FROM wali_kelas");
     $count = 0;
     while ($w = mysqli_fetch_assoc($q_wali)) {
         // Username = NIP (jika ada), jika kosong → wali<ID>
-        $username = !empty($w['nip_wali']) ? $w['nip_wali'] : 'wali'.$w['id'];
+        $username = !empty($w['nbm_wali']) ? $w['nbm_wali'] : 'wali'.$w['id'];
         $nama     = $w['nama_wali'];
 
         // Password default = username
@@ -91,7 +91,7 @@ $waliList = mysqli_query($conn, "SELECT * FROM wali_kelas ORDER BY kelas");
             <input type="text" name="nama_wali" class="form-control" placeholder="Nama Wali" required>
           </div>
           <div class="col-md-4">
-            <input type="text" name="nip_wali" class="form-control" placeholder="NIP/NUPTK /NIY" required>
+            <input type="text" name="nbm_wali" class="form-control" placeholder="NIP/NUPTK /NIY" required>
           </div>
         </div>
         <button type="submit" name="tambah" class="btn btn-success">Tambah</button>
@@ -115,7 +115,7 @@ $waliList = mysqli_query($conn, "SELECT * FROM wali_kelas ORDER BY kelas");
             <th width="5%">No</th>
             <th>Kelas</th>
             <th>Nama Wali</th>
-            <th>NIP</th>
+            <th>NBM</th>
             <th width="20%">Aksi</th>
           </tr>
         </thead>
@@ -127,7 +127,7 @@ $waliList = mysqli_query($conn, "SELECT * FROM wali_kelas ORDER BY kelas");
             echo "<td>{$no}</td>";
             echo "<td>{$row['kelas']}</td>";
             echo "<td>{$row['nama_wali']}</td>";
-            echo "<td>{$row['nip_wali']}</td>";
+            echo "<td>{$row['nbm_wali']}</td>";
             echo "<td>
                     <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editModal{$row['id']}'>Edit</button>
                     <a href='wali_kelas.php?hapus={$row['id']}' class='btn btn-danger btn-sm' onclick=\"return confirm('Yakin hapus data ini?')\">Hapus</a>
@@ -156,7 +156,7 @@ $waliList = mysqli_query($conn, "SELECT * FROM wali_kelas ORDER BY kelas");
                       </div>
                       <div class='mb-3'>
                         <label>NIP Wali</label>
-                        <input type='text' name='nip_wali' class='form-control' value='{$row['nip_wali']}'>
+                        <input type='text' name='nbm_wali' class='form-control' value='{$row['nbm_wali']}'>
                       </div>
                     </div>
                     <div class='modal-footer'>
